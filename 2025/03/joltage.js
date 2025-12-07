@@ -1,16 +1,26 @@
-export const joltage = (banks) => {
+export const joltage = (banks, numBatteries) => {
+    const getBestBatteryIndex = (batteries, start, ignore) => {
+        return batteries.indexOf(Math.max(...batteries.slice(start, batteries.length - ignore)));
+    }
+
     return banks
         .filter((line) => line !== "")
         .reduce((acc, bank) => {
-            // console.log(bank);
             // Approach:
             // - Example: 818181911112111
             // - Grab the highest number, excluding the last number. ie. 9
             // - Grab the highest number after that first one. ie. 2
-            const batteries = bank.split("");
-            const firstBatteryValue = Math.max(...batteries.slice(0, batteries.length-1));
-            const firstBatteryIndex = bank.indexOf(firstBatteryValue);
-            const secondBatteryValue = Math.max(...batteries.slice(firstBatteryIndex+1));
-            return acc + firstBatteryValue * 10 + secondBatteryValue;
+            const batteries = bank.split("").map(x => Number(x));
+            let currentBankJoltage = 0;
+            let batteryIndex = -1;
+            for (let i = numBatteries - 1; i>=0; i--) {
+                batteryIndex = getBestBatteryIndex(batteries, batteryIndex+1, i);
+                currentBankJoltage *= 10;
+                currentBankJoltage += batteries[batteryIndex];
+            }
+
+            console.log(bank, currentBankJoltage);
+
+            return acc + currentBankJoltage;
     }, 0)
 }

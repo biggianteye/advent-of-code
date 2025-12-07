@@ -12,6 +12,6 @@ const file = args[0];
 
 const banks = fs.readFileSync(file, "utf-8").split("\n");
 
-const result = joltage(banks);
+const result = joltage(banks, 2);
 
 console.log(result);
