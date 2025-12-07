@@ -1,6 +1,9 @@
 export const joltage = (banks, numBatteries) => {
     const getBestBatteryIndex = (batteries, start, ignore) => {
-        return batteries.indexOf(Math.max(...batteries.slice(start, batteries.length - ignore)));
+        return batteries.indexOf(
+            Math.max(...batteries.slice(start, batteries.length - ignore)),
+            start
+        );
     }
 
     return banks
@@ -19,7 +22,7 @@ export const joltage = (banks, numBatteries) => {
                 currentBankJoltage += batteries[batteryIndex];
             }
 
-            console.log(bank, currentBankJoltage);
+            // console.log(bank, currentBankJoltage);
 
             return acc + currentBankJoltage;
     }, 0)
