@@ -1,5 +1,7 @@
 import fs from "fs";
 
+import {countAccessibleRolls, markAccessibleRolls} from "./getAccessibleRolls.js";
+
 const args = process.argv.slice(2);
 if (args.length === 0) {
     console.error("Not enough arguments");
@@ -13,4 +15,8 @@ const layout = fs.readFileSync(file, "utf-8")
   .filter(x => x !== "")
   .map(x => x.split(""));
 
-console.log(layout.map(row => row.join("")).join("\n"));
+const updatedLayout = markAccessibleRolls(layout);
+
+console.log(updatedLayout.map(row => row.join("")).join("\n"));
+
+console.log(countAccessibleRolls(updatedLayout));
