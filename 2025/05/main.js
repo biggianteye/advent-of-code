@@ -64,3 +64,8 @@ available.forEach((item) => {
 });
 
 console.log(`There are ${numAvailable} fresh ingredients.`)
+
+const totalFreshIngredientIds = ranges
+  .map(range => (range.end - range.start) + 1)
+  .reduce((acc, val) => acc + val, 0);
+console.log(`The fresh ingredient ranges contain ${totalFreshIngredientIds} IDs`);
