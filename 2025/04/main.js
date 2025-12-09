@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import {countAccessibleRolls, markAccessibleRolls} from "./getAccessibleRolls.js";
+import {countAccessibleRolls, markAccessibleRolls, removeAccessibleRolls} from "./rolls.js";
 
 const args = process.argv.slice(2);
 if (args.length === 0) {
@@ -15,8 +15,30 @@ const layout = fs.readFileSync(file, "utf-8")
   .filter(x => x !== "")
   .map(x => x.split(""));
 
-const updatedLayout = markAccessibleRolls(layout);
+const printLayout = (layout) => console.log(
+  layout
+    .map(row => row.join(""))
+    .join("\n")
+);
 
-console.log(updatedLayout.map(row => row.join("")).join("\n"));
+console.log("Initial layout:")
+printLayout(layout);
 
-console.log(countAccessibleRolls(updatedLayout));
+let accessibleRolls;
+let totalRollsRemoved = 0;
+while (true) {
+  markAccessibleRolls(layout);
+  accessibleRolls = countAccessibleRolls(layout);
+  if (accessibleRolls === 0) {
+    break;
+  }
+  console.log(`\nRemoved ${accessibleRolls} roll${accessibleRolls > 1 ? "s": ""}:`)
+  printLayout(layout);
+  removeAccessibleRolls(layout);
+  totalRollsRemoved += accessibleRolls;
+}
+
+console.log("\nFinal layout:")
+printLayout(layout);
+
+console.log(`\nTotal rolls removed: ${totalRollsRemoved}`);

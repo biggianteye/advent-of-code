@@ -49,10 +49,21 @@ export const markAccessibleRolls = (layout) => {
       // console.log(x, y, surroundingRolls);
     }
   }
-
-  return layout;
 }
 
 export const countAccessibleRolls = (layout) => {
   return layout.flat().filter((cell) => cell === "x").length;
+}
+
+export const removeAccessibleRolls = (layout) => {
+  const width = layout[0].length;
+  const height = layout.length;
+
+  for (let x = 0; x<width; x++) {
+    for (let y = 0; y < height; y++) {
+      if (layout[x][y] === "x") {
+        layout[x][y] = ".";
+      }
+    }
+  }
 }
