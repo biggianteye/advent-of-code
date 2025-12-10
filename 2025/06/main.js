@@ -18,7 +18,7 @@ Object.defineProperty(Array.prototype, 'transpose', {
 });
 
 // Grab all the equations from the input
-const equations = fs.readFileSync(file, "utf-8")
+const part1Equations = fs.readFileSync(file, "utf-8")
   .split("\n")
   .filter(x => x !== "")
   .map(x => x.trim().split(/ +/g))
@@ -33,10 +33,43 @@ const equations = fs.readFileSync(file, "utf-8")
     }
   })
 
-console.log(equations);
+const part2Equations = fs.readFileSync(file, "utf-8")
+  .split("\n")
+  .filter(x => x !== "")
+  .map(x => x.split(""))
+  // Text is column based, so rotate the raw text to make it easier to work with
+  .transpose()
+  // Recombine the individual characters. eg.
+  // 1  *
+  // 24
+  // 356
+  //
+  // 269+
+  // 248
+  // 8
+  .map(x => x.join(""))
+  // Split by original divider columns
+  .reduce((acc, line) => {
+    if (acc.length === 0) { // first line
+      acc.push([line]);
+    } else if (line.match(/^ +$/)) { // empty line
+      acc.push([]);
+    } else {
+      acc[acc.length-1].push(line); // everything else
+    }
+    return acc;
+  }, [])
+  // Transform it into a more useful form
+  .map(x => {
+    // eg. [ '1  *', '24  ', '356 ' ] => { operator: "+", operands: [ 1, 24, 356 ] }
+    return {
+      operator: x[0].at(x[0].length-1), // '1  *' => "*"
+      operands: x.map(y => Number(y.slice(0, y.length-1).trim()))
+    }
+  })
 
 // Run all the equations and work out the total
-const total = equations.reduce((cumulativeTotal, equation) => {
+const calculateTotals = (equations) => equations.reduce((cumulativeTotal, equation) => {
   switch (equation.operator) {
     case "+":
       return cumulativeTotal + equation.operands.reduce((partialSum, val) => partialSum + val, 0);
@@ -48,4 +81,5 @@ const total = equations.reduce((cumulativeTotal, equation) => {
   }
 }, 0)
 
-console.log("Total: ", total);
+console.log("Total for part 1: ", calculateTotals(part1Equations));
+console.log("Total for part 2: ", calculateTotals(part2Equations));
